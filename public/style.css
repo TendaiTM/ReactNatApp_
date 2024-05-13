@@ -1,0 +1,101 @@
+body{
+    background-color: rgb(43, 31, 117);
+}
+
+.container {
+    margin-top: 60px;
+    display:block;
+    position:relative;
+    background-color: rgb(30, 21, 85);
+    width: 800px;
+    height: 400px;
+    border: 1px solid green;
+    padding: 35px;
+    margin-left: 20%;
+    box-shadow: 0px 0px  6px 13px   rgb(29, 10, 73);
+    color: rgb(2, 2, 2);
+    cursor: auto;
+
+}
+
+.card{
+  margin-top: 60px;
+  display:flex;
+  position:relative;
+  background-color: rgb(30, 21, 85);
+  width:fit-content;
+  border: 1px solid green;
+  padding: 35px;
+  margin:auto;
+  margin-top: 90px;
+  box-shadow: 0px 0px  6px 13px   rgb(29, 10, 73);
+  color: rgb(2, 2, 2);
+  cursor: auto;
+}
+
+.div1{
+  height: 30px;
+  margin-top: 78PX;
+}
+
+.btn1{
+  background-color: rgb(30, 21,85);
+}
+
+nav {
+  background-color: rgb(30, 21,85);
+  height: 80px;
+  width: 100%;
+  margin-top: 0;
+  padding: 30px 60px;
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+}
+
+nav ul {
+  margin-right: 0;
+  padding: 0;
+  justify-content:space-around;
+  align-items: center;
+  margin-right: 9px;
+} 
+nav li { 
+  float:right;
+  list-style: none;
+  margin-right: 10px;
+}
+nav a {
+  color: white;
+  display: inline-flex;
+  font-weight: bold;
+  padding: 5px 8px;
+  text-decoration: none;
+  border-radius: 20% 20%;
+}
+nav li:last-child {
+  margin-right: 0; /* Remove margin for the last menu item */
+}
+
+li a.active {
+  background-color: transparent;
+  color: aqua;
+}
+li a:hover:not(.active) {
+  background-color: rgb(190, 25, 15);
+  color:white;
+  cursor: auto;
+}
+
+button{
+  background-color: rgb(27, 40, 153);
+  margin: 0 auto;
+   display: block; /* Ensures button takes full width */
+}
+p {
+  margin: 0 auto;
+   display: block;
+}
+.center{
+  text-align: center;
+}

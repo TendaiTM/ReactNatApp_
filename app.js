@@ -11,11 +11,12 @@ const user = require('./models/user');
 const session = require('express-session');
 const uuid = require('uuid');
 const secretKey = uuid.v4();
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
 app.use(session({
-  secret: 'your secret key here',
+  secret: secretKey,
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false }
@@ -40,6 +41,9 @@ const db = mysql.createConnection({
 const publicDirectory = path.join(__dirname,'./public');
 app.use(express.static(publicDirectory));
 
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 //Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({extended: false}));
 //Pare JSON bodies (as sent by API clients)
@@ -54,6 +58,8 @@ db.connect((error) =>{
         console.log("MYSQL Connected...")
     }
 });
+
+app.use(cookieParser());
 
 //Define routes
 app.use('/', require('./routes/pages'));

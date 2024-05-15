@@ -4,7 +4,9 @@ const bcrypt = require('bcryptjs');
 const express = require("express");
 const session = require('express-session');
 const uuid = require('uuid');
+const { emit } = require('nodemon');
 const secretKey = uuid.v4();
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -30,6 +32,12 @@ app.use(session({
     cookie: { secure: false }
 }));
 
+const generateToken = (user) => {
+    return jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN
+    });
+};
+
 exports.register = async (req, res) => {
     console.log(req.body);
 
@@ -54,7 +62,7 @@ exports.register = async (req, res) => {
 
         await db.query('INSERT INTO users SET ?', {fname:fname, lname:lname, country_id:country_id, phoneNo:phoneNo, email:email, password:hashedPassword});
 
-        return res.render('register', {
+        return res.render('index', {
             message: 'User registered'
         });
     } catch (error) {
@@ -69,30 +77,43 @@ exports.login = async (req, res) => {
     console.log(req.body);
 
     const {email, password} = req.body;
-
+var userz;
     try {
-        const results = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-        const user = results[0];
+        var results;
+        var query = "SELECT * FROM users WHERE email ='" + email + "'"
+     db.query(query,(error,results,fields) =>{
+        if (error) throw error;
+        console.log(results[0]);
+      userz = results[0];
 
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.render('login', {
-                message: 'Invalid email or password'
-            });
-        }
+      
+      const user = userz;
 
-        const token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRES_IN
-        });
+      bcrypt.compare(password, user.password, (err, isMatch) => {
+          if (err) {
+              return res.render('login', {
+                  message: 'Invalid email or password'
+              });
+            }
+          });
+
+          const token = generateToken(user);
+    
+        // Calculate the cookie expiration date
+        const cookieExpiresInDays = parseInt(process.env.JWT_COOKIE_EXPIRES_IN, 10);
+        const expiresDate = new Date(Date.now() + cookieExpiresInDays * 24 * 60 * 60 * 1000);
 
         res.cookie('jwt', token, {
-            expires: new Date(
-                Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+            expires: expiresDate,
             httpOnly: true
         });
+     });
 
-        return res.redirect('/dashboard');
+     return res.render('index', {
+        message: 'User registered'
+      });
     } catch (error) {
-        console.log(error.message);
+        console.log("login error: " + error.message);
         return res.render('login', {
             message: 'An error occurred while logging in'
         });
